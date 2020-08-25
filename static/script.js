@@ -1,11 +1,18 @@
 window.onload = function() {
-    var inputform = new Vue({
-        el:'#inputform',
+    var app = new Vue({
+        el:'#app',
         delimiters: ['${', '}'],
         data:{
             userinput:"",
             showinput : true,
-            mode : "ckip"
+            mode : "ckip",
+            output:"",
+            newsclassification:["民視","中國時報","公視","中央通訊社","自由時報","PChome","Nownews","三立","Ettoday"],
+            ckip_newsarray:[],
+            jieba_newsarray:[],
+            showoutput : false,
+            predictdata : null,
+            loading : false
         },
         methods:{
             check:function(){
@@ -20,11 +27,9 @@ window.onload = function() {
                   })
                   .then(function (response) {
                     console.log(response.data);
-                    outputform.predictdata = response.data;
-                    console.log("mode"+inputform.mode);
-                    outputform.rmode = inputform.mode;
-                    outputform.userinput = inputform.userinput;
-                    outputform.pdresult();
+                    app.predictdata = response.data;
+                    console.log("mode"+app.mode);
+                    app.pdresult();
                   })
                   .catch(function (error) {
                     console.log(error);
@@ -33,27 +38,8 @@ window.onload = function() {
                 else{
                     alert("請輸入內容");
                 }
-            }
-        },
-        computed:{
-    
-        },
-    
-    })
-    var outputform = new Vue({
-        el:'#outputform',
-        delimiters: ['${', '}'],
-        data:{
-            output:"",
-            newsclassification:["民視","中國時報","公視","中央通訊社","自由時報","PChome","Nownews","三立","Ettoday"],
-            ckip_newsarray:[],
-            jieba_newsarray:[],
-            showoutput : false,
-            predictdata : null,
-            rmode : "",
-            userinput :""
-        },
-        methods:{
+            },
+            
             pdresult:function(){
                 this.userinput = this.userinput.replace(/\n/g, '<br/>');
                 this.sortnews(this.ckip_newsarray,this.predictdata[0]);
@@ -73,36 +59,25 @@ window.onload = function() {
                 });
             },
             refresh:function(){
-                inputform.userinput = "";
-                inputform.showinput = true;
-                outputform.showoutput = false;
+                this.userinput = "";
+                this.showinput = true;
+                this.showoutput = false;
                 this.ckip_newsarray = [];
                 this.jieba_newsarray = [];
             }
-        },
-        computed:{
-    
-        },
-    
-    })
-    var load = new Vue({
-        el:'#load',
-        delimiters: ['${', '}'],
-        data:{
-            loading : false,
         }
+    
     })
-
     axios.interceptors.request.use(function(config){
-        load.loading = true;
-        inputform.showinput = false;
+        app.loading = true;
+        app.showinput = false;
         return config;
     },function(error){   
         return Promise.reject(error);
     });
     axios.interceptors.response.use(function(response){  
-        load.loading = false; 
-        outputform.showoutput = true;
+        app.loading = false; 
+        app.showoutput = true;
         return response;
     },function(error){ 
         return Promise.reject(error);

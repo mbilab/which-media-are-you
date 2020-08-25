@@ -3,7 +3,6 @@
 <head>
 <meta charset = "utf-8"></meta>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <title>news-predictor</title>
 
@@ -11,42 +10,43 @@
 
 </head>
 
-<body style = "margin:0px; background-color: #5C9EAD" >
-	<div class = "topic">PREDICTOR</div>
-	<div v-show = "showinput" id = "inputform" >
-		<form class = "formcontent" @submit.prevent="onSubmit">
-			<label for = "userinput" class = "directive">請輸入文章 : </label>
-			<keep-alive>
-				<textarea id = "userinput" name = "userinput" rows = "8" style="width: 100%;"  placeholder = "請輸入內文" v-model="userinput"></textarea>
-			</keep-alive>
-			<div  id = "mode" > Method
-			<input type="radio" id="ckip" name="mode" value="ckip" v-model="mode" checked>
-			<label for="ckip">CKIPtagger</label>
-			<input type="radio" id="jieba" name="mode" value="jieba" v-model="mode">
-			<label for="jieba">Jieba</label>
+<body>
+	<div id = "app">
+		<div class = "topic">PREDICTOR</div>
+		<div v-show = "showinput" id = "inputform" >
+			<form class = "formcontent" @submit.prevent="onSubmit">
+				<label for = "userinput" class = "directive">請輸入文章 : </label>
+				<keep-alive>
+					<textarea id = "userinput" name = "userinput" rows = "8" style="width: 100%;"  placeholder = "請輸入內文" v-model="userinput"></textarea>
+				</keep-alive>
+				<div  id = "mode" > Method
+					<input type="radio" id="ckip" name="mode" value="ckip" v-model="mode" checked>
+					<label for="ckip">CKIPtagger</label>
+					<input type="radio" id="jieba" name="mode" value="jieba" v-model="mode">
+					<label for="jieba">Jieba</label>
+				</div>
+				<input class = "btn" accept="" type = "button" value = "確定" @click = "submit" style="font-size:15px;"></input>
+			</form>
+		</div>
+		<div v-show = "loading" style="display: none;" class = "wait">PLEASE WAIT</div>
+		<div v-show = "showoutput" style="display: none;" class = "predicted-result" id = "outputform" >
+			<div class = "table" v-show = "mode === 'ckip' " v-for="(news) in ckip_newsarray"><span class = "bartext"> ${news.newsclass} : ${news.possibility}% </span>
+				<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/ckip_newsarray[0].possibility)*100 + '%'}"></span></span>
 			</div>
-			<input id = "btn" accept="" type = "button" value = "確定" @click = "submit" style = "font-size: 15px;" ></input>
-		</form>
-	</div>
-	<div v-show = "loading" style="display: none;" id = "load" class = "wait">PLEASE WAIT</div>
-	<div v-show = "showoutput" style="display: none;" class = "predicted-result" id = "outputform" >
-		<div class = "table" v-show = "rmode === 'ckip' " v-for="(news) in ckip_newsarray"><span class = "bartext"> ${news.newsclass} : ${news.possibility}% </span>
-			<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/ckip_newsarray[0].possibility)*100 + '%'}"></span></span>
+			<div class = "table" v-show = "mode === 'jieba' " v-for="(news) in jieba_newsarray"><span class = "bartext"> ${news.newsclass} : ${news.possibility}% </span>
+				<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/jieba_newsarray[0].possibility)*100 + '%'}"></span></span>
+			</div>
+			<form style="text-align: center;">
+				<input type="radio" id="rckip" name="mode" v-model="mode" value="ckip">
+				<label for="rckip">CKIPtagger</label>
+				<input type="radio" id="rjieba" name="mode" v-model="mode" value="jieba">
+				<label for="rjieba">Jieba</label>
+				<input class = "btn" accept="" type = "button" value = "重新測試" @click = "refresh" style="font-size:15px;"></input>
+			</form>
+			<div id ="content" >您的輸入 : <span v-html="userinput"></span>
+			</div>
+			
 		</div>
-		<div class = "table" v-show = "rmode === 'jieba' " v-for="(news) in jieba_newsarray"><span class = "bartext"> ${news.newsclass} : ${news.possibility}% </span>
-			<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/jieba_newsarray[0].possibility)*100 + '%'}"></span></span>
-		</div>
-		<form style="text-align: center;">
-			<input type="radio" id="rckip" name="rmode" v-model="rmode" value="ckip">
-			<label for="rckip">CKIPtagger</label>
-			<input type="radio" id="rjieba" name="rmode" v-model="rmode" value="jieba">
-			<label for="rjieba">Jieba</label>
-			<input id = "btn" accept="" type = "button" value = "重新測試" @click = "refresh"  style = "font-size: 15px;"></input>
-		</form>
-		<div id ="content" style = "font-size:16px;text-align:left; color:black ; background-color:lightblue ; word-break: break-word; margin:10px 0px ; border: 1px solid black;
-		border-radius: 3px; padding: 2px;">您的輸入 : <span v-html="userinput"></span>
-		</div>
-		
 	</div>
 	<script src="/static/script.js"></script>
 	
