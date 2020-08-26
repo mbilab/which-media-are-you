@@ -15,11 +15,10 @@ import pickle
 # local import
 from preprocessor import preprocessor
 
+with open('./pickle/clf.pickle', 'rb') as f:
+    clf = pickle.load(f)
 
 def predict(article, segment_type):
-    with open('./pickle/clf.pickle', 'rb') as f:
-        clf = pickle.load(f)
-
     x_test = preprocessor(article, segment_type)
     y_pred_proba = clf.predict_proba(x_test)
     return y_pred_proba[0]
