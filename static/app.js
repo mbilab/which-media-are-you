@@ -74,3 +74,27 @@ axios.interceptors.response.use(function(response){
 },function(error){ 
   return Promise.reject(error);
 });
+
+/*
+import App from './App.vue'
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+})
+
+axios.interceptors.request.use(function(config){
+    app.showLoadingContent = true;
+    app.showInputContent = false;
+    return config;
+},function(error){   
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function(response){  
+    app.showLoadingContent = false; 
+    app.showOutputContent = true;
+    return response;
+},function(error){ 
+    return Promise.reject(error);
+});*/
+
