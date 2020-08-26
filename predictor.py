@@ -20,10 +20,10 @@ class Item(BaseModel):
 @app.post("/predict")
 async def predict(item:Item):
     jiebaResult = (pov.predict(item.inputArticle,'jieba')).tolist()
-    jiebaResult = [round(num*100, 2) for num in jieba]
-    ckiptaggerResult = (pov.predict(item.userinput,'ckiptagger')).tolist()
-    ckiptaggerResult = [round(num*100,2) for num in ckiptagger]
-    predictData = [ckiptagger,jieba]
+    jiebaResult = [round(num*100, 2) for num in jiebaResult]
+    ckiptaggerResult = (pov.predict(item.inputArticle,'ckiptagger')).tolist()
+    ckiptaggerResult = [round(num*100,2) for num in ckiptaggerResult]
+    predictData = [ckiptaggerResult,jiebaResult]
     return predictData
 
 if __name__=="__main__":
