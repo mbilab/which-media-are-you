@@ -6,49 +6,143 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <title>news-predictor</title>
 
-<link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+<style>
+	body{
+		margin:0px;
+		background-color: #5C9EAD;
+	}
+	.btn{
+		font-size:15px;
+		background-color: #e7e7e7;
+		color:black;
+	}
+	.header{
+		top: 0px;
+		color: #EEEEEE;
+		font-size:38px;
+		font-style: oblique;
+		font-weight: bold;
+		background-color: #326273 ;
+		padding:12px;
+		text-align: center;
+	}
+	.main{
+		padding: 80px 0px;
+		width:620px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	.msg{
+		margin:10px 2px;
+		display:block;
+		font-size:20px;
+		font-weight:bold;
+		color:black;
+	}
+	.table{
+		text-align: left;
+		border: 1px solid grey;
+		margin:0px 0px;
+		padding:10px;
+		background-color:#fff;
+	}
+	.bartext{
+		text-align: center;
+		font-size: 18px;
+		margin:0px 0px;
+		padding:2px;
+		background-color:#fff;
+		width: 28%;
+		display: inline-block;
+	}
+	.barspan{
+		padding: 2px;
+		float: right;
+		width: 69%;
+	}
+	.bar{
+		float: left;
+		height:24px;
+		background-color: lightskyblue;
+		border: 0px;
+		border-color: firebrick;
+		margin: 0px;
+		padding: 0px;
 
+	}
+	.btnmsg{
+		font-weight: bold; 
+		margin: 5px 2px;
+		font-size:18px;
+	}
+	#outputform form{
+		font-weight: bold; 
+		margin: 10px 5px 2px 2px; 
+		font-size:18px;
+	}
+	#news_article{
+		font-size:16px;
+		text-align:left;
+		color:black ;
+		background-color:lightblue ;
+		word-break: break-word;
+		border: 1px solid black;
+		border-radius: 3px; padding: 2px;
+	}
+	#loadingmsg{
+		font-size: 65px;
+		text-align: center;
+		font-family: monospace, Courier, monospace;
+		font-weight: bolder;
+		padding: 130px; 
+		text-shadow: azure;
+	}
+
+
+</style>
 </head>
 
 <body>
 	<div id = "app">
-		<div class = "topic">PREDICTOR</div>
-		<div v-show = "showinput" id = "inputform" >
-			<form class = "formcontent" @submit.prevent="onSubmit">
-				<label for = "userinput" class = "directive">請輸入文章 : </label>
+		<div class = "header">PREDICTOR</div>
+		<div v-show = "showInputContent">
+			<form class = "main" @submit.prevent="onSubmit">
+				<label for = "inputArticle" class = "msg">請輸入文章 : </label>
 				<keep-alive>
-					<textarea id = "userinput" name = "userinput" rows = "8" style="width: 100%;"  placeholder = "請輸入內文" v-model="userinput"></textarea>
+					<textarea id = "inputArticle" name = "inputArticle" rows = "8" style="width: 100%;"  placeholder = "請輸入內文" v-model="inputArticle"></textarea>
 				</keep-alive>
-				<div  id = "mode" > Method
-					<input type="radio" id="ckip" name="mode" value="ckip" v-model="mode" checked>
+				<div  class = "btnmsg" > Method
+					<input type="radio" name="mode" value="ckip" id = "ckip" v-model="mode" checked>
 					<label for="ckip">CKIPtagger</label>
-					<input type="radio" id="jieba" name="mode" value="jieba" v-model="mode">
+					<input type="radio" name="mode" value="jieba" id = "jieba" v-model="mode">
 					<label for="jieba">Jieba</label>
 				</div>
-				<input class = "btn" accept="" type = "button" value = "確定" @click = "submit" style="font-size:15px;"></input>
+				<input class = "btn" type = "button" value = "確定" @click = "submit"></input>
 			</form>
 		</div>
-		<div v-show = "loading" style="display: none;" class = "wait">PLEASE WAIT</div>
-		<div v-show = "showoutput" style="display: none;" class = "predicted-result" id = "outputform" >
-			<div class = "table" v-show = "mode === 'ckip' " v-for="(news) in ckip_newsarray"><span class = "bartext"> ${news.newsclass} : ${news.possibility}% </span>
-				<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/ckip_newsarray[0].possibility)*100 + '%'}"></span></span>
+		<div v-show = "showLoadingContent" style="display: none;" id = "loadingmsg">PLEASE WAIT</div>
+		<div v-show = "showOutputContent" style="display: none;" class = "main">
+			<div class = "table" v-show = "mode === 'ckip' " v-for="(news) in ckipNewsArray"><span class = "bartext"> ${news.classification} : ${news.possibility}% </span>
+				<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/ckipNewsArray[0].possibility)*100 + '%'}"></span></span>
 			</div>
-			<div class = "table" v-show = "mode === 'jieba' " v-for="(news) in jieba_newsarray"><span class = "bartext"> ${news.newsclass} : ${news.possibility}% </span>
-				<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/jieba_newsarray[0].possibility)*100 + '%'}"></span></span>
+			<div class = "table" v-show = "mode === 'jieba' " v-for="(news) in jiebaNewsArray"><span class = "bartext"> ${news.classification} : ${news.possibility}% </span>
+				<span class = "barspan"><span class = "bar" v-bind:style = "{width: (news.possibility/jiebaNewsArray[0].possibility)*100 + '%'}"></span></span>
 			</div>
-			<form style="text-align: center;">
-				<input type="radio" id="rckip" name="mode" v-model="mode" value="ckip">
-				<label for="rckip">CKIPtagger</label>
-				<input type="radio" id="rjieba" name="mode" v-model="mode" value="jieba">
-				<label for="rjieba">Jieba</label>
-				<input class = "btn" accept="" type = "button" value = "重新測試" @click = "refresh" style="font-size:15px;"></input>
+			<form style="text-align: center;margin:10px 0px ;">
+				<div class = "btnmsg"  style="display:inline;">
+					<input type="radio" id="ckip_btn" name="mode" v-model="mode" value="ckip">
+				<label for="ckip_btn">CKIPtagger</label>
+				<input type="radio" id="jieba_btn" name="mode" v-model="mode" value="jieba">
+				<label for="jieba_btn">Jieba</label>
+				</div>
+				<input class = "btn" type = "button" value = "重新測試" @click = "refresh"></input>
 			</form>
-			<div id ="content" >您的輸入 : <span v-html="userinput"></span>
+			<div id ="news_article" >您的輸入 : <span v-html="inputArticle"></span>
 			</div>
 			
 		</div>
 	</div>
-	<script src="/static/script.js"></script>
+	<script src="/static/app.js" type="module"></script>
 	
 </body>
 </html>
