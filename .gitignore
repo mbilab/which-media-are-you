@@ -4,5 +4,4 @@ node_modules/
 __pycache__/
 .cache
 .git
-pickle/
 dist/
