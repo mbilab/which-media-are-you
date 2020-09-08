@@ -1,18 +1,22 @@
 from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
 from pydantic import Json,BaseModel
-from fastapi.staticfiles import StaticFiles
 import uvicorn
 import pov
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
+origins = [
+    "http://merry.ee.ncku.edu.tw:16664",
+]
 
-@app.get("/")
-async def mainhtml(request: Request):
-    return templates.TemplateResponse("main.html", {"request": request})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Item(BaseModel):
     inputArticle:str
@@ -27,4 +31,4 @@ async def predict(item:Item):
     return predictData
 
 if __name__=="__main__":
-    uvicorn.run("predictor:app",host="merry.ee.ncku.edu.tw", port=16664)
+    uvicorn.run("predictor:app",host="merry.ee.ncku.edu.tw", port=16665)
