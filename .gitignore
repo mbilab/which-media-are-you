@@ -1,3 +1,7 @@
 test.py
 model/
-Readme.md
+node_modules/
+__pycache__/
+.cache
+.git
+pickle/
