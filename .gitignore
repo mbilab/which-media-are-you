@@ -1,8 +1,9 @@
-test.py
+cache
+dist/
+.git
 model/
 node_modules/
-__pycache__/
-.cache
-.git
-dist/
+package-lock.json
 pickle/
+__pycache__/
+test.py
