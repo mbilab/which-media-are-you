@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request
 from pydantic import Json,BaseModel
-import uvicorn
 import pov
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,6 +28,3 @@ async def predict(item:Item):
     ckiptaggerResult = [round(num*100,2) for num in ckiptaggerResult]
     predictData = [ckiptaggerResult,jiebaResult]
     return predictData
-
-if __name__=="__main__":
-    uvicorn.run("predictor:app",host="merry.ee.ncku.edu.tw", port=16665)
