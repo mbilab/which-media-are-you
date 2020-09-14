@@ -1,15 +1,15 @@
 <template lang="pug">
 
 #app
-  .header PREDICTOR
+  .header Which media are you ?
   div(v-show='showInputContent')
-    form.main(@submit.prevent='onSubmit')
+    .main
       label.msg(for='inputArticle') 請輸入文章 : 
       keep-alive
-        textarea#inputArticle(name='inputArticle', rows='8', style='width: 100%;', placeholder='請輸入內文', v-model='inputArticle')
-      .btnmsg Method  
-        input#ckip(type='radio', name='mode', value='ckip', v-model='mode', checked='')
-        label(for='ckip')  CKIPtagger 
+        textarea#inputArticle(name='inputArticle', rows='9', style='width: 100%;', placeholder='請輸入內文', v-model='inputArticle')
+      .btnmsg Method&nbsp;&nbsp;
+        input#ckip(type='radio', name='mode', value='ckip', v-model='mode')
+        label(for='ckip')  CKIPtagger&nbsp;
         input#jieba(type='radio',class="ui button", name='mode', value='jieba', v-model='mode')
         label(for='jieba') Jieba
       input.btn(type='button',class="ui right floated button",value='確定',style='font-size:18px; padding:8px;color:black;', @click='submit')
@@ -23,12 +23,12 @@
       span.bartext  {{news.classification}} : {{news.possibility}}% 
       span.barspan
         span.bar(v-bind:style="{width: (news.possibility/jiebaNewsArray[0].possibility)*100 + '%'}")
-    form(style='text-align: center;margin:10px 0px ;')
-      .btnmsg(style='text-align: center;')
-        input#ckip_btn(type='radio', name='mode', v-model='mode', value='ckip')
-        label(for='ckip_btn')  CKIPtagger 
-        input#jieba_btn(type='radio', name='mode', v-model='mode', value='jieba')
-        label(for='jieba_btn')  Jieba 
+    div(style='text-align: center;margin:10px 0px ;')
+      .btnmsg
+        input#ckip_btn(type='radio', name='rmode', v-model='mode', value='ckip')
+        label(for='ckip_btn')  CKIPtagger&nbsp;
+        input#jieba_btn(type='radio', name='rmode', v-model='mode', value='jieba')
+        label(for='jieba_btn')  Jieba
       input.btn(type='button',class="ui right floated button",value='重新測試',style='font-size:18px; padding:8px;color:black;' @click='refresh')
     #news_article 您的輸入 : 
       span(v-html='inputArticle')
@@ -36,19 +36,22 @@
 </template>
 
 <script>
-var Data;
 export default {
   data() {return {
-    inputArticle:"",
+    inputArticle : "",
     showInputContent : true,
-    mode : "ckip",
-    output:"",
+    mode : 'ckip',
+    output :"",
     newsClassification:["民視","中國時報","公視","中央通訊社","自由時報","PChome","Nownews","三立","Ettoday"],
-    ckipNewsArray:[],
-    jiebaNewsArray:[],
+    ckipNewsArray : [],
+    jiebaNewsArray : [],
     showOutputContent : false,
     predictedData : null,
-    showLoadingContent : false
+    showLoadingContent : false,
+    fastapiPort : null,
+    host : null,
+    fastapiUrl : null
+
   }},
   methods: {    
     submit:function(){
@@ -58,9 +61,8 @@ export default {
         return;
       }
       var self = this;
-      axios.post('http://merry.ee.ncku.edu.tw:16665/predict', {
+      axios.post(`http://${this.fastapiUrl}`, {
         inputArticle: this.inputArticle,
-        headers: {"Access-Control-Allow-Origin": "*"}
       })
       .then(function (response) {
         self.predictedData = response.data;
@@ -101,6 +103,8 @@ export default {
     }
   },
   mounted:function(){
+    var config = require('../config');
+    this.fastapiUrl = `${config.host}:${config.fastapi_port}/predict`
     var app = this;
     axios.interceptors.request.use(function(config){
     app.showLoadingContent = true;
@@ -121,95 +125,97 @@ export default {
 </script>
 
 <style>
-    body{
-    margin:0px;
-    background-color: #5C9EAD;
-    }
-    .btn{
-    background-color: #e7e7e7;
-    color:black;
-    }
-    .header{
-    top: 0px;
-    color: #EEEEEE;
-    font-size:38px;
-    font-style: oblique;
-    font-weight: bold;
-    background-color: #326273 ;
-    padding:12px;
-    text-align: center;
-    }
-    .main{
-    padding: 80px 0px;
-    width:620px;
-    margin-left: auto;
-    margin-right: auto;
-    }
-    .msg{
-    margin:10px 2px;
-    display:block;
-    font-size:20px;
-    font-weight:bold;
-    color:black;
-    }
-    .table{
-    text-align: left;
-    border: 1px solid grey;
-    margin:0px 0px;
-    padding:10px;
-    background-color:#fff;
-    }
-    .bartext{
-    text-align: center;
-    font-size: 18px;
-    margin:0px 0px;
-    padding:2px;
-    background-color:#fff;
-    width: 28%;
-    display: inline-block;
-    }
-    .barspan{
-    padding: 0px 0px;
-    float: right;
-    width: 69%;
-    }
-    .bar{
-    float: left;
-    height:24px;
-    background-color: lightskyblue;
-    border: 0px;
-    border-color: firebrick;
-    margin: 0px;
-    padding: 0px;
-    }
-    .btnmsg{
-    font-weight: bold;
-    margin: 6px 2px;
-    font-size:22px;
-    display:inline-block;
-    }
-    #outputform form{
-    font-weight: bold;
-    margin: 10px 5px 2px 2px;
-    font-size:18px;
-    }
-    #news_article{
-    font-size:16px;
-    text-align:left;
-    color:black ;
-    background-color:lightblue ;
-    word-break: break-word;
-    border: 1px solid darkgrey;
-    border-radius: 3px; padding: 2px;
-    }
-    #loadingmsg{
-    font-size: 65px;
-    text-align: center;
-    font-family: monospace, Courier, monospace;
-    font-weight: bolder;
-    padding: 130px;
-    text-shadow: azure;
-    }
+  #app{
+  margin:0px;
+  background: #5C9EAD;
+  height:100%;
+  }
+  #loadingmsg{
+  font-size: 65px;
+  text-align: center;
+  font-family: monospace, Courier, monospace;
+  font-weight: bolder;
+  padding: 130px;
+  text-shadow: azure;
+  }
+  #news_article{
+  font-size:16px;
+  text-align:left;
+  color:black ;
+  background-color:lightblue ;
+  word-break: break-word;
+  border: 1px solid darkgrey;
+  border-radius: 3px; padding: 2px;
+  }
+  #outputform form{
+  font-weight: bold;
+  margin: 10px 5px 2px 2px;
+  font-size:18px;
+  }
+  .bar{
+  float: left;
+  height:24px;
+  background-color: lightskyblue;
+  border: 0px;
+  border-color: firebrick;
+  margin: 0px;
+  padding: 0px;
+  }
+  .bartext{
+  text-align: center;
+  font-size: 18px;
+  margin:0px 0px;
+  padding:2px;
+  background-color:#fff;
+  width: 28%;
+  display: inline-block;
+  }
+  .barspan{
+  padding: 0px 0px;
+  float: right;
+  width: 69%;
+  }
+  .btn{
+  background-color: #e7e7e7;
+  color:black;
+  }
+  .btnmsg{
+  font-weight: bold;
+  margin: 6px 2px;
+  font-size:22px;
+  display:inline-block;
+  text-align: center;
+  }
+  .header{
+  top: 0px;
+  color: #EEEEEE;
+  font-size:38px;
+  font-style: oblique;
+  font-weight: bold;
+  background-color: #326273 ;
+  padding:12px;
+  text-align: center;
+  }
+  .main{
+  padding: 80px 0px;
+  width:640px;
+  margin-left: auto;
+  margin-right: auto;
+  }
+  .msg{
+  margin:10px 2px;
+  display:block;
+  font-size:20px;
+  font-weight:bold;
+  color:black;
+  }
+  .table{
+  text-align: left;
+  border: 1px solid grey;
+  margin:0px 0px;
+  padding:10px;
+  background-color:#fff;
+  }
 
 </style>
 
