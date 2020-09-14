@@ -5,46 +5,61 @@
 # Setup
 
 Create your own virtual environment, then install all the required packages.
+
 ```python
 virtualenv -p python3 'venv name' 
 source 'venv name'/bin/activate 
 pip3 install -r requirements.txt
 ```
+```
+npm i
+```
 
-# Usage 1 : Predict articles in Python
+Make symbolic links for the big folders which are not in main directory.
+```
+ln -s /home/tintin/predictor/pickle
+ln -s /home/tintin/predictor/model
+```
 
-Input your article and the text segmentation you want to use, then it will output the probability of the classification result.
-1-民視，2-中國時報，3-公視，4-中央通訊社，5-自由時報，6-PChome，7-Nownews，8-三立，9-Ettoday
+# Command-line usage
+
+Specify `text` and `segmentation_type`, then `predict()` will output the corresponding probabilities of media.
 
 Example:
-* Create `test.py` and write the following code.
+
+1. Create `test.py` and write the following code.
  
 ```python
-from predictor import pov.py
-article = [article to be predicted]
-segment_type = [segment_type] #  jieba or ckiptagger
-print(predict(article, segment_type)) 
-```
-* Compile `test.py`.
+from predict import pov.py
 
+text = [text to be predicted]
+segmentation_type = [segmentation type] #  'jieba' or 'ckiptagger'
+print(predict(text, segmentation_type)) 
 ```
-$ python test.py
-```
-output:
+
+2. Run `test.py` and you will see an output like
+
 ```
 [0.11421281 0.12740344 0.10493702 0.10435487 0.12456657 0.11950728 0.111482 0.10811266 0.08542336]
 ```
-# Usage 2 : Put the result on the website
 
-* Edit `predictor.py`.
-<br>You should replace the host and the port with your own.
-```python
-uvicorn.run("predictor:app",host="merry.ee.ncku.edu.tw", port=16664) 
-#  uvicorn.run("predictor:app",host=[host], port=[port])
+The output represents the probabilities of [民視 中國時報 公視 中央通訊社 自由時報 PChome Nownews 三立 Ettoday].
+
+# Web usage
+
+1. Edit `config.json`, replace the value of `"fastapi_port"` and `"frontend_port"` with your own ports.
+```
+{
+  "host" : "merry.ee.ncku.edu.tw",
+  "fastapi_port" : [port for fastapi],
+  "frontend_port" : [port for frontend]
+}
+```
+2. Run parcel to open  `app/index.pug` in browser and then run `predictor.py`. Note that, `[port for frontend]` here should be same as what in `config.json`.
+
+```
+npx parcel ./app/index.pug --port [port for frontend]
+python predictor.py
 ```
 
-* Compile `predictor.py`.
-```
-$ python predictor.py
-```
-Then you can setup the website on `[host]:[port]`.
+2. Open the website on `[host]:[port for frontend]` with your browser.
