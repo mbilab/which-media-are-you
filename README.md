@@ -1,31 +1,28 @@
 # Requirement
 
-* python 3.6.9
+* python >= 3.6.9
 
 # Setup
 
 Create your own virtual environment, then install all the required packages.
 
-```python
+```sh
 virtualenv -p python3 'venv name'
 source 'venv name'/bin/activate
 pip3 install -r requirements.txt
+yarn
 ```
 
-```
-npm i
-```
+Make symbolic links for the big folders, which are not in main directory.
 
-Make symbolic links for the big folders which are not in main directory.
-
-```
-ln -s /home/tintin/predictor/pickle
+```sh
 ln -s /home/tintin/predictor/model
+ln -s /home/tintin/predictor/pickle
 ```
 
 # Command-line usage
 
-Specify `text` and `segmentation_type`, then `predict()` will output the corresponding probabilities of media.
+Specify `text` and `segmentation_type`.  Call `predict()` to get the probabilities of media.
 
 Example:
 
@@ -54,16 +51,19 @@ The output represents the probabilities of [民視 中國時報 公視 中央通
 ```
 {
   "host" : "merry.ee.ncku.edu.tw",
-  "fastapi_port" : [port for fastapi],
-  "frontend_port" : [port for frontend]
+  "fastapi_port" : [fastapi port],
+  "frontend_port" : [frontend port]
 }
 ```
 
-2. Run parcel to open  `app/index.pug` in browser and then run `predictor.py`. Note that, `[port for frontend]` here should be same as what in `config.json`.
+2. Run parcel to open  `app/index.pug` in browser and then run `predictor.py`.  Note that, `[frontend port]` here should be same as what in `config.json`.
+
+#! omit config.json by using uvicorn
+#! run both commands with currently and package.json
 
 ```
-npx parcel ./app/index.pug --port [port for frontend]
+yarn parcel ./app/index.pug --port [frontend port]
 python predictor.py
 ```
 
-3. Open the website on `[host]:[port for frontend]` with your browser.
+3. Open the website on `[host]:[frontend port]` with your browser.
