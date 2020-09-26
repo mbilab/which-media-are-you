@@ -13,17 +13,17 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 
 
+jieba.load_userdict('./jieba_dict/dict.txt.big')
+stopword_set = set()
+with open('./jieba_dict/stopwords.txt', 'r', encoding = 'utf-8') as stopwords:
+    for stopword in stopwords:
+        stopword_set.add(stopword.strip('\n'))
+        stopword_set.add('\n')
+
 def preprocessor(article, segment_type):
 
     x = []
     corpus = []
-
-    jieba.load_userdict('./jieba_dict/dict.txt.big')
-    stopword_set = set()
-    with open('./jieba_dict/stopwords.txt', 'r', encoding = 'utf-8') as stopwords:
-        for stopword in stopwords:
-            stopword_set.add(stopword.strip('\n'))
-        stopword_set.add('\n')
 
     # use jieba
     if 'jieba' == segment_type:

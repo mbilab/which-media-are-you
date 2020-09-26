@@ -1,3 +1,10 @@
+cache
+.cache
+dist/
+.git
 model/
+node_modules/
+package-lock.json
+pickle/
 __pycache__/
 test.py
