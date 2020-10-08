@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "concurrently": "^5.3.0",
     "parcel": "^1.12.4",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-offline": "^2.4.1-1",
@@ -12,5 +13,26 @@
     "pug": "^2.0.3",
     "sass": "^1.20.1",
     "vue-template-compiler": "^2.6.10"
-  }
+  },
+  "name": "which-media-are-you",
+  "description": "* python >= 3.6.9",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "yarn parcel ./app/index.pug --port $frontend_port",
+    "fastapi": "python predictor.py",
+    "web": "concurrently \"npm run frontend\" \"npm run fastapi\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mbilab/which-media-are-you.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mbilab/which-media-are-you/issues"
+  },
+  "homepage": "https://github.com/mbilab/which-media-are-you#readme"
 }
