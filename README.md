@@ -46,7 +46,7 @@ The output represents the probabilities of [民視 中國時報 公視 中央通
 
 # Web usage
 
-1.  Run frontend `./app/index.pug` and fastapi `predictor.py` concurrently. You need to replace the ports with yours.
+1.  Run frontend `./app/index.pug` and fastapi `predictor.py` concurrently with the following command line. You need to replace the ports with yours.
 ```
 frontend_port=[frontend_port] fastapi_port=[fastapi_port] npm run web
 ```
