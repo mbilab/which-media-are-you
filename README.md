@@ -1,4 +1,4 @@
-# Requirement
+equirement
 
 * python >= 3.6.9
 
@@ -46,24 +46,9 @@ The output represents the probabilities of [民視 中國時報 公視 中央通
 
 # Web usage
 
-1. Edit `config.json`, replace the value of `"fastapi_port"` and `"frontend_port"` with your own ports.
-
+1.  Run frontend `./app/index.pug` and fastapi `predictor.py` concurrently. You need to replace the ports with yours.
 ```
-{
-  "host" : "merry.ee.ncku.edu.tw",
-  "fastapi_port" : [fastapi port],
-  "frontend_port" : [frontend port]
-}
+frontend_port=[frontend_port] fastapi_port=[fastapi_port] npm run web
 ```
 
-2. Run parcel to open  `app/index.pug` in browser and then run `predictor.py`.  Note that, `[frontend port]` here should be same as what in `config.json`.
-
-#! omit config.json by using uvicorn
-#! run both commands with currently and package.json
-
-```
-yarn parcel ./app/index.pug --port [frontend port]
-python predictor.py
-```
-
-3. Open the website on `[host]:[frontend port]` with your browser.
+2. Open the website on `[host]:[frontend port]` with your browser.
