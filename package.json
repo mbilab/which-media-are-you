@@ -22,7 +22,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "yarn parcel ./app/index.pug --port $frontend_port",
     "fastapi": "python predictor.py",
-    "web": "concurrently \"npm run frontend\" \"npm run fastapi\""
+    "web": "concurrently \"yarn parcel ./app/index.pug --port $frontend_port\" \"python predictor.py\""
   },
   "repository": {
     "type": "git",

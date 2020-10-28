@@ -93,7 +93,6 @@ export default {
         return b.possibility - a.possibility;
       });
     },
-
     refresh:function(){
       this.inputArticle = "";
       this.showInputContent = true;
@@ -103,8 +102,7 @@ export default {
     }
   },
   mounted:function(){
-    var config = require('../config');
-    this.fastapiUrl = `${config.host}:${config.fastapi_port}/predict`
+    this.fastapiUrl = `merry.ee.ncku.edu.tw:${process.env.fastapi_port}/predict`
     var app = this;
     axios.interceptors.request.use(function(config){
     app.showLoadingContent = true;

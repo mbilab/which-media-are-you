@@ -2,18 +2,17 @@ from fastapi import FastAPI, Request
 from pydantic import Json,BaseModel
 import uvicorn, json
 import pov
+import os
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-with open('config.json') as config_file:
-    config = json.load(config_file)
-    host = config['host']
-    fastapiPort = config['fastapi_port']
-    frontendUrl = config['host']+":"+str(config['frontend_port'])
+host = "merry.ee.ncku.edu.tw"
+fastapiPort = os.environ.get('fastapi_port')
+frontendPort = os.environ.get('frontend_port')
 
 origins = [
-    "http://" + frontendUrl,
+    "http://" + host+":"+frontendPort
 ]
 
 app.add_middleware(
